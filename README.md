@@ -8,7 +8,7 @@ API receive : https://open.bigmodel.cn/
 
 ![Image](https://user-images.githubusercontent.com/56761243/268491167-5013b3f0-432b-45cc-8501-dcc2b2a173f8.png)
 
-`Remember Use Arduino IDE`
+## Please Following Steps below:
 
 ### Steps 1
 Download Arduino IDE and install it. Open the IDE and find the File -> Perference. Use ESP32 Addritional boards manager URLs.
@@ -52,4 +52,4 @@ Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP3
 
 ---
 
-Last thanks the @Lxns and other libraries provider 👍
+Last thanks the @Lxns-Network and other libraries provider 👍

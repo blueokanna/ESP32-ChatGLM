@@ -28,7 +28,7 @@ These are libraries for this project:
 #include <HTTPClient.h>         //find from library
 ```
 ### Step 3 🤨
-FInd the library folder and find the CustomJWT Folder.  
+FInd the library folder and find the CustomJWT Folder.  (I also upload `CustomJWT.h` file)
 
 # `(Remeber Watch here!)`
 

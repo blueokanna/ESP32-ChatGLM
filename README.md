@@ -36,19 +36,17 @@ Find the CustomJWT.h file in src folder. to add some code in CustomJWT(........)
 
 `char *sign_type = "SIGN"` add under `char *typ = "JWT" ` for each CustomJWT method!
 
-
 ![Image](https://user-images.githubusercontent.com/56761243/268493130-475f39f9-f6c4-4721-b6d5-c566be82e2c8.png)
-
 
 `IMPORTANT!` 
 there got a problem for Library JWT library(The Library name called: CustomJWT)
 
-### Incorrect Code in CustomJWT.h file
+#### Incorrect Code in CustomJWT.h file
 ```sprintf(headerJSON, "{\"alg\": \"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg, typ, sign_type);``` 
 
 `Error:` The is a problem between \"alg\": \"%s\"which has a space between \"alg\": and \"%s\"! Please delete it! if not it will show different Base64 code. 
 
-### fix Code in CustomJWT.h file
+#### Fix the Code in `CustomJWT.h` file
 ```sprintf(headerJSON, "{\"alg\":\"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg, typ, sign_type);```
 
 ### Step4 

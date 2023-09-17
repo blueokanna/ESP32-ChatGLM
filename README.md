@@ -10,13 +10,16 @@ API receive : https://open.bigmodel.cn/
 
 `Remember Use Arduino IDE`
 
-Steps 1:
+### Steps 1
 Download Arduino IDE and install it. Open the IDE and find the File -> Perference. Use ESP32 Addritional boards manager URLs.
 
-Step 2: Download the Project and Download libraries. 
+### Step 2
+Download the Project and Download libraries. 
 
-Step 3: FInd the library folder and find the CustomJWT Folder.  
-`(Remeber Watch here!)`
+### Step 3
+FInd the library folder and find the CustomJWT Folder.  
+
+# `(Remeber Watch here!)`
 
 Find the CustomJWT.h file in src folder. to add some code in CustomJWT(........) (in brackets)
 
@@ -27,17 +30,19 @@ Find the CustomJWT.h file in src folder. to add some code in CustomJWT(........)
 
 
 `IMPORTANT!` 
-there got a problem for JWT library  
+there got a problem for Library JWT library(The Library name called: CustomJWT)
 
 > sprintf(headerJSON, "{\"alg\": \"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg, typ, sign_type);'
 
-'Solution:` The is a problem between \"alg\": \"%s\"which has a space between \"alg\": and \"%s\"! Please delete it and like pic below. End of these steps and save it  into your library.
+`Solution:` The is a problem between \"alg\": \"%s\"which has a space between \"alg\": and \"%s\"! Please delete it and like pic below. End of these steps and save it  into your library.
 
 ![Image](https://user-images.githubusercontent.com/56761243/268492464-142965a5-663e-4253-bef3-72cb97d22dc5.png)
 
-Step4 .Paste the project for 'ChatGLM.ino' and `index.h` into your own project folder and start it to change your personal API and WiFI(You can change your own local the NTP) and even you can design your personal Webpage for `index.h` file
+### Step4 
+Paste the project for 'ChatGLM.ino' and `index.h` into your own project folder and start it to change your personal API and WiFI(You can change your own local the NTP) and even you can design your personal Webpage for `index.h` file
 
-Step 5. Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP32 board to PC. Mine is ESP32-S3
+### Step 5
+Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP32 board to PC. Mine is ESP32-S3
 
 
 ![Image](https://user-images.githubusercontent.com/56761243/268492784-49fc02d8-060d-4898-9d80-15b4fe50ea07.png)

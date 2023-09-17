@@ -16,7 +16,7 @@ Download Arduino IDE and install it. Open the IDE and find the File -> Perferenc
 
 ### Step 2
 Download the Project and Download libraries. (Build in just use it, otherwise download it)
-These are library for this project:
+These are libraries for this project:
 ```
 #include <Arduino.h>            //build in 
 #include <CustomJWT.h>          //find from library

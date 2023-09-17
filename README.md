@@ -27,8 +27,8 @@ These are libraries for this project:
 #include <time.h>               //build in
 #include <HTTPClient.h>         //find from library
 ```
-### Step 3 🤨
-FInd the library folder and find the CustomJWT Folder.  (I also upload `CustomJWT.h` file)
+### Step 3(Hard step) 🤨
+FInd the library folder and find the CustomJWT Folder.  (I also upload `CustomJWT.h` file☝️)
 
 # `(Remeber Watch here!)`
 
@@ -58,9 +58,9 @@ Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP3
 
 ![Image](https://user-images.githubusercontent.com/56761243/268492784-49fc02d8-060d-4898-9d80-15b4fe50ea07.png)
 
-> Finally Happy Flash       🥇 
+> Finally Happy Flashing your ESP32 device! 😄🥇 
 
 
 ---
 
-Last thanks the @Lxns-Network and other libraries provider 👍
+Last thanks the @JoinChang and other libraries providers 👍

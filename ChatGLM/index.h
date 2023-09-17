@@ -5,7 +5,7 @@ const char *html = R"(
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>BlueVale's Chat AI Charactor Bot</title>
+    <title>ESP32 Chat AI Charactor Bot</title>
     <link
       rel="icon"
       type="image/x-icon"
@@ -162,10 +162,10 @@ const char *html = R"(
   <body class="dark-mode">
     <div class="chat-popup" id="myForm">
       <div class="chat-container">
-        <h1>BlueVale's Q&A Artificial Intelligence Chat</h1>
+        <h1>ESP32 Q&A Artificial Intelligence Chat</h1>
         <p>Have a light platform conversation by ChatGLM AI</p>
         <div class="form-container">
-          <h3>Chat with BlueVale's AI</h3>
+          <h3>Chat with ESP32 AI</h3>
           <div
             id="user_message_box"
             class="chat-box-container"

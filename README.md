@@ -30,7 +30,7 @@ These are libraries for this project:
 ### Step 3(Hard step) 🤨
 FInd the library folder and find the CustomJWT Folder.  (I also upload `CustomJWT.h` file☝️)
 
-# `(Remeber Watch here!)`
+# `(Watch here!)`
 
 Find the CustomJWT.h file in src folder. to add some code in CustomJWT(........) (in brackets)
 
@@ -63,4 +63,4 @@ Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP3
 
 ---
 
-Last thanks the @JoinChang and other libraries providers 👍
+Last thanks to @JoinChang and other libraries providers 👍

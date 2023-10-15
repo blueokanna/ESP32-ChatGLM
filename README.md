@@ -2,7 +2,7 @@
 
 Using the Chinese version of ChatGPT -- "ChatGLM" on Espressif's ESP32 platform by Arduino!
 
-# ReadMe
+# About Project
 Use the official asynchronous calling method to request its API. The API is obtained from the following websites:
 
 API receive : https://open.bigmodel.cn/

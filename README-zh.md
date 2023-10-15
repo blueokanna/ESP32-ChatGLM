@@ -1,4 +1,4 @@
-# 乐鑫 ESP32-ChatGLM 大模型自定义对话
+# 乐鑫 ESP32-ChatGLM 大模型自定义对话 - [English Docs](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README.md)
 使用乐鑫 ESP32 平台来享受单片机上的开放的大语言模型 **ChatGLM** ！
 
 ----

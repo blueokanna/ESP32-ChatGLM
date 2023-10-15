@@ -1,4 +1,5 @@
-# ESP32-ChatGLM
+# ESP32-ChatGLM Model for Custom Conversations - [中文文档](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README-zh.md)
+
 Using the Chinese version of ChatGPT -- "ChatGLM" on Espressif's ESP32 platform by Arduino!
 
 # ReadMe

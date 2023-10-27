@@ -17,16 +17,17 @@ char jsonString[500];
 char idCharArray[150];
 char secretCharArray[100];
 
-const char *ssid_1 = "xxxxx";
-const char *ssid_2 = "xxxxxx";
-const char *ssid_3 = "xxxxx";
+const char *ssid_1 = "xxxxxxxxxxxx";
+const char *ssid_2 = "xxxxxxxxxxxx";
+const char *ssid_3 = "xxxxxxxxxxxx";
 
 const char *password_1 = "xxxxxx";
-const char *password_2 = "xxxxxxx";
-const char *password_3 = "xxxxxxxx";
+const char *password_2 = "xxxxxx";
+const char *password_3 = "xxxxxx";
 
-const char *ssidList[] = { ssid_1, ssid_2, ssid_3 };
-const char *passwordList[] = { password_1, password_2, password_3 };
+
+const char *ssidList[] = {ssid_1};
+const char *passwordList[] = { password_1};
 const char *getMessage;
 
 unsigned long timestamp;
@@ -40,25 +41,25 @@ String getReturnJson, responseMessage, userMessage;
 HTTPClient http, http_id;
 
 char *user_info = "BlueOkanna";
-char *bot_info = "Bots info user design" char *bot_name = "Bot_name";
-char *user_name = "Blue";
+char *bot_info = "Bots info user design"; 
+char *bot_name = "Bot_name";
+char *user_name = "Blueokanna";
 char *role = "user";
 
 char *version = "0.0.1";
 
-char *setApiKey = "xxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxx";  //Get Api key from https://open.bigmodel.cn/
+char *setApiKey = "xxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxx";  //Get Api key from https://open.bigmodel.cn/
 
-//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/characterglm/async-invoke";  //ChatGLM Character
-//char *web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_pro/async-invoke";  //ChatGLM Pro
-//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_std/async-invoke";  //ChatGLM Std
-//char *web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_lite/async-invoke";  // ChatGLM lite
+//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/sse-invoke";  //ChatGLM3 SSE
+char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/async-invoke";  //ChatGLM3 async
+//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/invoke";  //ChatGLM3 sync
 
 const char *ntpServer = "ntp.aliyun.com";  //You can change NTP from what you want, the default is aliyun
 const long gmtOffset_sec = 28800;          //Change GMT, default is China's NTP +8
 const int daylightOffset_sec = 0;
 
-AsyncWebServer server(80);  //Web Page IP:80
-DynamicJsonDocument doc(1000);
+AsyncWebServer server(9898);  //Web Page IP:9898
+DynamicJsonDocument doc(2048);
 
 void initTime() {
   Serial.println("Initializing time synchronization...");

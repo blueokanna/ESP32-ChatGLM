@@ -1,15 +1,16 @@
 # ESP32-ChatGLM for Custom Conversations - [中文文档](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README-zh.md)
 
-Using the Chinese version of ChatGPT -- "ChatGLM" on Espressif's ESP32 platform by Arduino!
+> Technological achievements from Tsinghua University --->
+> "ChatGLM" 🇨🇳 on Espressif's ESP32 platform by Arduino!
 
-# About Project
+# ESP32-ChatGLM Project
 Use the official asynchronous calling method to request its API. The API is obtained from the following websites:
 
 API receive : https://open.bigmodel.cn/
 
-![Image](https://user-images.githubusercontent.com/56761243/268491167-5013b3f0-432b-45cc-8501-dcc2b2a173f8.png)
+![1](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/877319fa-c688-43c4-b833-da10deaf2428)
 
-## Please Following Steps below:
+## Please Following Steps below⚠️:
 
 ### Steps 1
 Download Arduino IDE and install it. Open the IDE and find the File -> Perference. 
@@ -50,10 +51,10 @@ there got a problem for Library JWT library(The Library name called: CustomJWT)
 #### Fix the Code in `CustomJWT.h` file
 ```sprintf(headerJSON, "{\"alg\":\"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg, typ, sign_type);```
 
-### Step4 
+### Step4 📄
 Paste the project for `ChatGLM.ino` and `index.h` into your own project folder and start it to change your personal API and WiFI(You can change your own local the NTP) and even you can design your personal Webpage for `index.h` file
 
-### Step 5
+### Step 5 💻
 Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP32 board to PC, Mine is ESP32-S3
 
 

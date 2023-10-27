@@ -26,8 +26,8 @@ const char *password_2 = "xxxxxx";
 const char *password_3 = "xxxxxx";
 
 
-const char *ssidList[] = {ssid_1};
-const char *passwordList[] = { password_1};
+const char *ssidList[] = { ssid_1, ssid_2, ssid_3 };
+const char *passwordList[] = { password_1, password_2, password_3 };
 const char *getMessage;
 
 unsigned long timestamp;
@@ -41,7 +41,7 @@ String getReturnJson, responseMessage, userMessage;
 HTTPClient http, http_id;
 
 char *user_info = "BlueOkanna";
-char *bot_info = "Bots info user design"; 
+char *bot_info = "Blueokanna's Chat Bots";
 char *bot_name = "Bot_name";
 char *user_name = "Blueokanna";
 char *role = "user";
@@ -50,9 +50,9 @@ char *version = "0.0.1";
 
 char *setApiKey = "xxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxx";  //Get Api key from https://open.bigmodel.cn/
 
-//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/sse-invoke";  //ChatGLM3 SSE
-char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/async-invoke";  //ChatGLM3 async
-//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/invoke";  //ChatGLM3 sync
+//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/sse-invoke";  //New ChatGLM3 SSE
+char *web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/async-invoke";  //New ChatGLM3 async
+//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/invoke";  //New ChatGLM3 sync
 
 const char *ntpServer = "ntp.aliyun.com";  //You can change NTP from what you want, the default is aliyun
 const long gmtOffset_sec = 28800;          //Change GMT, default is China's NTP +8
@@ -75,7 +75,7 @@ void initTime() {
   Serial.println(F("Time synchronization failed. Check NTP server and network."));
 }
 
-void splitApiKey(const char *apikey) {  //IMPORTANT
+void splitApiKey(const char *apikey) {
   const char *delimiter = strchr(apikey, '.');
 
   if (delimiter != NULL) {
@@ -178,7 +178,7 @@ void setup() {
         });
         server.begin();
       } else {
-        Serial.println(F("Failed to obtain Beijing time"));   //if you change your ntp you had better to change it
+        Serial.println(F("Failed to obtain Beijing time"));  //if you change your ntp you had better to change it
       }
       break;
     }
@@ -193,7 +193,7 @@ void loop() {
   if (WiFi.status() == WL_CONNECTED) {
 
     http.begin(web_hook);
-    http.addHeader("Accept", "application/json");   
+    http.addHeader("Accept", "application/json");
     http.addHeader("Content-Type", "application/json; charset=UTF-8");
     http.addHeader("Authorization", getReturnJson);
 

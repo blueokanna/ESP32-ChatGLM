@@ -6,7 +6,12 @@
 #include <WiFiUdp.h>            //build in
 #include <time.h>               //build in
 #include <HTTPClient.h>         //find from library
+
+#include "chatconfig.h"
 #include "index.h"
+#include "async_invoke.h"
+#include "sync_invoke.h"
+#include "sse_invoke.h"
 
 char header[50];
 char payload[500];
@@ -17,49 +22,20 @@ char jsonString[500];
 char idCharArray[150];
 char secretCharArray[100];
 
-const char *ssid_1 = "xxxxxxxxxxxx";
-const char *ssid_2 = "xxxxxxxxxxxx";
-const char *ssid_3 = "xxxxxxxxxxxx";
-
-const char *password_1 = "xxxxxx";
-const char *password_2 = "xxxxxx";
-const char *password_3 = "xxxxxx";
-
-
-const char *ssidList[] = { ssid_1, ssid_2, ssid_3 };
-const char *passwordList[] = { password_1, password_2, password_3 };
-const char *getMessage;
-
 unsigned long timestamp;
 time_t now;
 struct tm timeinfo;
 
-bool checkEmpty = false;
-bool checkIP = true;
+String invokeChoice = "Async_invoke"; //Set the Voking Method for project(Support Sync and SSE)
+//String invokeChoice = "Sync_invoke";
+//String invokeChoice = "SSE_invoke";
 
-String getReturnJson, responseMessage, userMessage;
+String JsonToken, responseMessage, userMessage;
 HTTPClient http, http_id;
 
-char *user_info = "BlueOkanna";
-char *bot_info = "Blueokanna's Chat Bots";
-char *bot_name = "Bot_name";
-char *user_name = "Blueokanna";
-char *role = "user";
-
-char *version = "0.0.1";
-
-char *setApiKey = "xxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxx";  //Get Api key from https://open.bigmodel.cn/
-
-//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/sse-invoke";  //New ChatGLM3 SSE
-char *web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/async-invoke";  //New ChatGLM3 async
-//char* web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/invoke";  //New ChatGLM3 sync
-
-const char *ntpServer = "ntp.aliyun.com";  //You can change NTP from what you want, the default is aliyun
-const long gmtOffset_sec = 28800;          //Change GMT, default is China's NTP +8
-const int daylightOffset_sec = 0;
-
-AsyncWebServer server(9898);  //Web Page IP:9898
-DynamicJsonDocument doc(2048);
+AsyncWebServer server(9898);  // Web Page IP:9898
+DynamicJsonDocument doc(20480);
+DynamicJsonDocument jsonDoc(20480);
 
 void initTime() {
   Serial.println("Initializing time synchronization...");
@@ -85,27 +61,31 @@ void splitApiKey(const char *apikey) {
       strncpy(idCharArray, apikey, idLength);
       idCharArray[idLength] = '\0';
       strcpy(secretCharArray, delimiter + 1);
-      snprintf(jsonString, sizeof(jsonString), "{\"api_key\":\"%s\",\"exp\":%lu,\"timestamp\":%lu}", idCharArray, now * 5, now);  //expire time is set 5 * now
+      snprintf(jsonString, sizeof(jsonString), "{\"api_key\":\"%s\",\"exp\":%lu,\"timestamp\":%lu}", idCharArray, now * 3, now);  // expire time is set 3 * now
       CustomJWT jwt(secretCharArray, header, sizeof(header), payload, sizeof(payload), signature, sizeof(signature), out, sizeof(out));
       jwt.encodeJWT(jsonString);
-      getReturnJson = jwt.out;  //return jwt
+      JsonToken = jwt.out;
       jwt.clear();
     } else {
-      Serial.println("ID part of API key is too long.");
+      Serial.println("ID part of API key is not valid.");
     }
   } else {
     Serial.println("Invalid API key format.");
   }
 }
 
-int tryWiFiConnection(const char *ssid, const char *password, int networkNumber) {
+int tryWiFiConnection(const char *ssid, const char *identity, const char *password, int networkNumber) {
   Serial.printf("Connecting to WiFi_%d...\n", networkNumber);
 
   int attempts = 0;
   const int maxAttempts = 10;
 
   while (attempts < maxAttempts) {
-    WiFi.begin(ssid, password);
+    if (strcmp(identity, "none") == 0) {
+      WiFi.begin(ssid, password);
+    } else {
+      WiFi.begin(ssid, WPA2_AUTH_PEAP, identity, identity, password); //WPA2_ENTERPRISE | Eduroam calling
+    }
 
     int connectionAttempt = 0;
     while (connectionAttempt < 4) {
@@ -130,10 +110,10 @@ void setup() {
   Serial.begin(115200);
   delay(100);
 
-  for (int networkNumber = 0; networkNumber < 3; networkNumber++) {
+  for (int networkNumber = 0; networkNumber < 3 && !wifiConnect; networkNumber++) {
     Serial.printf("Connecting to WiFi_%d...\n", networkNumber + 1);
 
-    int successfulConnection = tryWiFiConnection(ssidList[networkNumber], passwordList[networkNumber], networkNumber + 1);
+    int successfulConnection = tryWiFiConnection(ssidList[networkNumber], identityList[networkNumber], passwordList[networkNumber], networkNumber + 1);
 
     if (successfulConnection != -1) {
       Serial.printf("Connected to WiFi_%d\n", successfulConnection);
@@ -144,43 +124,23 @@ void setup() {
       if (getLocalTime(&timeinfo)) {
         now = mktime(&timeinfo);
         splitApiKey(setApiKey);
-        server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-          request->send(200, "text/html", html);
-        });
 
-        server.on("/receiveTextMessage", HTTP_GET, [](AsyncWebServerRequest *request) {
-          const char *getMessage = doc["data"]["task_id"];
-          String web_search_id = "https://open.bigmodel.cn/api/paas/v3/model-api/-/async-invoke/" + String(getMessage);  //GET Method(+below)
-          http_id.begin(web_search_id);
-          http_id.addHeader("Accept", "application/json");
-          http_id.addHeader("Content-Type", "application/json; charset=UTF-8");
-          http_id.addHeader("Authorization", getReturnJson);
-          int httpResponseIDCode = http_id.GET();
-          if (httpResponseIDCode > 0) {
-            responseMessage = http_id.getString();
-          } else {
-            responseMessage = "Error: External API request failed!";
-          }
-          request->send(200, "text/html", responseMessage);
-        });
 
-        server.on("/send", HTTP_GET, [](AsyncWebServerRequest *request) {
-          responseMessage.clear();
-          userMessage = request->getParam("message")->value();
-          if (userMessage.length() > 0) {
-            checkEmpty = true;
-            checkIP = true;
-            Serial.print(F("My Question is: "));
-            Serial.print(userMessage);
-            Serial.println();
-          }
-          request->send(200, "text/plain", "Message sent to Serial");
-        });
-        server.begin();
+        if (invokeChoice == "Async_invoke") {
+          asyncMessage(server, http_id, doc, JsonToken, responseMessage, userMessage, checkEmpty); //Async
+          invokeChoice = "Async_invoke";
+        } else if (invokeChoice == "Sync_invoke") {
+          syncMessage(server, JsonToken, responseMessage, userMessage, checkEmpty); //Sync
+          invokeChoice = "Sync_invoke";
+        } else if (invokeChoice == "SSE_invoke") {
+          SSEMessage(server, JsonToken, responseMessage, userMessage, checkEmpty); //SSE
+          invokeChoice = "SSE_invoke";
+        }
+
+        wifiConnect = true;
       } else {
-        Serial.println(F("Failed to obtain Beijing time"));  //if you change your ntp you had better to change it
+        Serial.println(F("Failed to obtain Beijing time"));
       }
-      break;
     }
   }
 
@@ -190,30 +150,14 @@ void setup() {
 }
 
 void loop() {
-  if (WiFi.status() == WL_CONNECTED) {
-
-    http.begin(web_hook);
-    http.addHeader("Accept", "application/json");
-    http.addHeader("Content-Type", "application/json; charset=UTF-8");
-    http.addHeader("Authorization", getReturnJson);
-
-    if (checkEmpty) {
-      // String metaData = "\"meta\": {\"user_info\": \"" + String(user_info) + "\", \"bot_info\": \"" + String(bot_info) + "\", \"bot_name\": \"" + String(bot_name) + "\", \"user_name\": \"" + String(user_name) + "\"}";
-      // String payloadMessage = "{\"prompt\": [{\"role\": \"" + String(role) + "\", \"content\": \"" + userMessage + "\"}], " + metaData + "}";
-      String payloadMessage = "{\"prompt\": \"" + userMessage + "\"}";
-
-      int httpResponseCode = http.POST(payloadMessage);
-      if (httpResponseCode > 0) {
-        String returnJsonMessage = http.getString();
-        DeserializationError error = deserializeJson(doc, returnJsonMessage);
-        if (error) {
-          Serial.print(F("JSON parsing failed: "));
-          Serial.println(F(error.c_str()));
-        }
-      }
+  if (wifiConnect && WiFi.status() == WL_CONNECTED) {
+    if (invokeChoice == "Async_invoke") {
+      loopingSetting(http, doc, JsonToken, userMessage, invokeChoice, checkEmpty);  //Async
+    } else if (invokeChoice == "Sync_invoke") {
+      loopingSetting(http, JsonToken, responseMessage, userMessage, invokeChoice, checkEmpty);  //Sync
+    } else if (invokeChoice == "SSE_invoke") {
+      loopingSetting(http, JsonToken, jsonDoc, responseMessage, userMessage, invokeChoice, checkEmpty);  //SSE
     }
-    checkEmpty = false;
-    http.end();
   }
   delay(100);
 }

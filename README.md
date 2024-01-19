@@ -61,7 +61,7 @@ Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP3
 > Finally Happy Flashing your ESP32 device! 😄🥇 
 
 ## Other Questions:
-> Currently the latest support for ChatGLM-4 with integrated AI roleplaying content, this one removes the SSE requests from version 0.0.2. Since the official documentation is a large-scale revision that basically > combines streaming and synchronous requests into one, I'll leave the synchronous requests here, and if you have any other questions, you can start a **Discussion** or start an **Issue**, and I'll answer them for > you when I see them! Also fork this project thanks!
+> Currently the latest support for ChatGLM-4 with integrated AI roleplaying content, this one removes the SSE requests from version 0.0.2. Since the official documentation is a large-scale revision that basically combines streaming and synchronous requests into one, I'll leave the synchronous requests here, and if you have any other questions, you can start a **Discussion** or start an **Issue**, and I'll answer them for you when I see them! Also fork this project thanks!
 ---
 
 Last thanks to @JoinChang and other libraries providers 👍

@@ -4,14 +4,13 @@
 #include <ArduinoJson.h>        //find from library
 #include <WiFiClientSecure.h>   //build in
 #include <WiFiUdp.h>            //build in
-#include <time.h>               //build in
 #include <HTTPClient.h>         //find from library
+#include <NTPClient.h>          //find from library
 
 #include "chatconfig.h"
 #include "index.h"
 #include "async_invoke.h"
 #include "sync_invoke.h"
-#include "sse_invoke.h"
 
 char header[50];
 char payload[500];
@@ -22,33 +21,28 @@ char jsonString[500];
 char idCharArray[150];
 char secretCharArray[100];
 
-unsigned long timestamp;
-time_t now;
-struct tm timeinfo;
 
-String invokeChoice = "Async_invoke"; //Set the Voking Method for project(Support Sync and SSE)
+String invokeChoice = "Async_invoke";
+
 //String invokeChoice = "Sync_invoke";
-//String invokeChoice = "SSE_invoke";
+
+String LLM_Model = "glm-4";
 
 String JsonToken, responseMessage, userMessage;
 HTTPClient http, http_id;
 
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "ntp.aliyun.com", 0, 30000);
+
 AsyncWebServer server(9898);  // Web Page IP:9898
 DynamicJsonDocument doc(20480);
-DynamicJsonDocument jsonDoc(20480);
 
-void initTime() {
-  Serial.println("Initializing time synchronization...");
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-  for (int i = 0; i < 10; i++) {
-    if (time(nullptr)) {
-      Serial.println(F("Time synchronized"));
-      return;
-    }
-    delay(1000);
-    Serial.println(F("Waiting for time synchronization..."));
+long long int timestamp_generation() {
+  if (wifiConnect) {
+    timeClient.update();
+    long long int timestamp_generation = timeClient.getEpochTime() * 1000ULL;  //get Timestamp
+    return timestamp_generation;
   }
-  Serial.println(F("Time synchronization failed. Check NTP server and network."));
 }
 
 void splitApiKey(const char *apikey) {
@@ -61,10 +55,13 @@ void splitApiKey(const char *apikey) {
       strncpy(idCharArray, apikey, idLength);
       idCharArray[idLength] = '\0';
       strcpy(secretCharArray, delimiter + 1);
-      snprintf(jsonString, sizeof(jsonString), "{\"api_key\":\"%s\",\"exp\":%lu,\"timestamp\":%lu}", idCharArray, now * 3, now);  // expire time is set 3 * now
+      snprintf(jsonString, sizeof(jsonString), "{\"api_key\":\"%s\",\"exp\":%lld,\"timestamp\":%lld}", idCharArray, static_cast<long long>(timestamp_generation()) * 3, static_cast<long long>(timestamp_generation()));
       CustomJWT jwt(secretCharArray, header, sizeof(header), payload, sizeof(payload), signature, sizeof(signature), out, sizeof(out));
       jwt.encodeJWT(jsonString);
       JsonToken = jwt.out;
+
+      Serial.println(JsonToken);  //Debug
+
       jwt.clear();
     } else {
       Serial.println("ID part of API key is not valid.");
@@ -84,7 +81,7 @@ int tryWiFiConnection(const char *ssid, const char *identity, const char *passwo
     if (strcmp(identity, "none") == 0) {
       WiFi.begin(ssid, password);
     } else {
-      WiFi.begin(ssid, WPA2_AUTH_PEAP, identity, identity, password); //WPA2_ENTERPRISE | Eduroam calling
+      WiFi.begin(ssid, WPA2_AUTH_PEAP, identity, identity, password);  //WPA2_ENTERPRISE | Eduroam calling
     }
 
     int connectionAttempt = 0;
@@ -115,28 +112,19 @@ void setup() {
 
     int successfulConnection = tryWiFiConnection(ssidList[networkNumber], identityList[networkNumber], passwordList[networkNumber], networkNumber + 1);
 
-    if (successfulConnection != -1) {
+    if (successfulConnection != -1 && !wifiConnect) {
       Serial.printf("Connected to WiFi_%d\n", successfulConnection);
       Serial.print("The Internet IP: ");
       Serial.println(WiFi.localIP());
 
-      initTime();
-      if (getLocalTime(&timeinfo)) {
-        now = mktime(&timeinfo);
+      if (timestamp_generation > 0) {
         splitApiKey(setApiKey);
 
-
         if (invokeChoice == "Async_invoke") {
-          asyncMessage(server, http_id, doc, JsonToken, responseMessage, userMessage, checkEmpty); //Async
-          invokeChoice = "Async_invoke";
+          asyncMessage(server, http_id, doc, JsonToken, responseMessage, userMessage, checkEmpty);  //Async
         } else if (invokeChoice == "Sync_invoke") {
-          syncMessage(server, JsonToken, responseMessage, userMessage, checkEmpty); //Sync
-          invokeChoice = "Sync_invoke";
-        } else if (invokeChoice == "SSE_invoke") {
-          SSEMessage(server, JsonToken, responseMessage, userMessage, checkEmpty); //SSE
-          invokeChoice = "SSE_invoke";
+          syncMessage(server, responseMessage, userMessage, checkEmpty);  //Sync
         }
-
         wifiConnect = true;
       } else {
         Serial.println(F("Failed to obtain Beijing time"));
@@ -152,11 +140,9 @@ void setup() {
 void loop() {
   if (wifiConnect && WiFi.status() == WL_CONNECTED) {
     if (invokeChoice == "Async_invoke") {
-      loopingSetting(http, doc, JsonToken, userMessage, invokeChoice, checkEmpty);  //Async
+      loopingSetting(http, LLM_Model, doc, JsonToken, userMessage, invokeChoice, checkEmpty);  //Async
     } else if (invokeChoice == "Sync_invoke") {
-      loopingSetting(http, JsonToken, responseMessage, userMessage, invokeChoice, checkEmpty);  //Sync
-    } else if (invokeChoice == "SSE_invoke") {
-      loopingSetting(http, JsonToken, jsonDoc, responseMessage, userMessage, invokeChoice, checkEmpty);  //SSE
+      loopingSetting(http, LLM_Model, JsonToken, responseMessage, userMessage, invokeChoice, checkEmpty);  //Sync
     }
   }
   delay(100);

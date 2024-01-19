@@ -1,14 +1,17 @@
 #ifndef SYNC_INVOKE_H
 #define SYNC_INVOKE_H
 
-void syncMessage(AsyncWebServer &server, String &JsonToken, String &responseMessage, String &userMessage, bool &checkEmpty) {
+void syncMessage(AsyncWebServer &server, String &responseMessage, String &userMessage, bool &checkEmpty) {
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(200, "text/html", html);
   });
 
+  server.begin();
+
   server.on("/send", HTTP_GET, [&responseMessage, &userMessage, &checkEmpty](AsyncWebServerRequest *request) {
     responseMessage.clear();
+
     userMessage = request->getParam("message")->value();
 
     if (userMessage.length() > 0) {
@@ -24,40 +27,45 @@ void syncMessage(AsyncWebServer &server, String &JsonToken, String &responseMess
     if (responseMessage.length() > 0) {
       request->send(200, "text/html", responseMessage);
     } else {
-      request->send(400, "text/html", "Message error!");
+      request->send(400, "text/html", "Message error! Please Check Token or Others!");
     }
   });
-
-  server.begin();
 }
 
-void loopingSetting(HTTPClient &http, String &JsonToken, String &responseMessage, String &userMessage, String &invokeChoice, bool &checkEmpty) {
-  const char *sync_web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/invoke";
+void loopingSetting(HTTPClient &http, String &LLM, String &JsonToken, String &responseMessage, String &userMessage, String &invokeChoice, bool &checkEmpty) {
+  const char *sync_web_hook = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
 
-  if (checkEmpty) {
-    if (invokeChoice == "Sync_invoke") {
-      http.begin(sync_web_hook);
-      http.setTimeout(60000);
-      http.addHeader("Accept", "application/json");
-      http.addHeader("Content-Type", "application/json; charset=UTF-8");
-      http.addHeader("Authorization", JsonToken);
+  if (invokeChoice == "Sync_invoke") {
+    if (checkEmpty) {
+      int maxRetries = 3;
+      int retryCount = 0;
 
-      String payloadMessage = "{\"prompt\": \"" + userMessage + "\"}";
-      int httpResponseCode = http.POST(payloadMessage);
+      while (retryCount < maxRetries) {
+        http.begin(sync_web_hook);
+        http.setTimeout(30000);
+        http.addHeader("Accept", "application/json");
+        http.addHeader("Content-Type", "application/json; charset=UTF-8");
+        http.addHeader("Authorization", JsonToken);
 
-      responseMessage.clear();
+        String payloadMessage = "{\"model\":\"" + LLM + "\", \"messages\":[{\"role\":\"system\",\"content\":\"" + String(system_role) + "\"},{\"role\":\"user\",\"content\":\"" + userMessage + "\"}],\"stream\":false}";
 
-      if (httpResponseCode > 0) {
-        responseMessage = http.getString();
-        //Serial.println(responseMessage);
+        int httpResponseCode = http.POST(payloadMessage);
+        responseMessage.clear();
 
-      } else {
-        Serial.print(F("HTTP POST request failed, error: "));
-        Serial.println(httpResponseCode);
+        if (httpResponseCode > 0) {
+          responseMessage = http.getString();
+          //Serial.println(responseMessage);  //debug
+          break;
+        } else {
+          retryCount++;
+          Serial.print(F("HTTP POST request failed, error: "));
+          Serial.println(httpResponseCode);
+          delay(500);
+        }
       }
-      http.end();
-      checkEmpty = false;
     }
+    http.end();
+    checkEmpty = false;
   }
 }
 

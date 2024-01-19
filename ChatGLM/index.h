@@ -1,3 +1,6 @@
+#ifndef WEB_H
+#define WEB_H
+
 const char *html = R"(
 <!DOCTYPE html>
 <html>
@@ -190,13 +193,23 @@ const char *html = R"(
 <body class="dark-mode">
   <div class="chat-popup" id="myForm">
     <div class="chat-container">
-      <div style="display: flex; flex-direction: row; align-items: center;">
-        <h1>ESP32 Artificial Intelligence Chat</h1>
+      <div style="display: flex;  align-items: center; ">
+        <h1 style="margin-right: 12px;">ChatGLM-4 Artificial Intelligence Chat</h1>
+        <!-- Beta -->
+        <!-- 
+        <div class="selection-container" style="display: flex; align-items: center;">
+          <select id="chat-selection" name="chat-option">
+          <option value="Async_invoke">Async Invoke</option>
+          <option value="Sync_invoke">Sync Invoke</option>
+        </select>
+        </div>
+              -->
+
       </div>
 
-      <p>Have a light platform conversation by ChatGLM AI</p>
+      <p>Have a light platform conversation by ChatGLM-4</p>
       <div class="form-container">
-        <h3>Chat with ESP32 AI</h3>
+        <h3>Chat with ChatGLM-4</h3>
         <div id="user_message_box" class="chat-box-container" style="overflow: auto"></div>
         <br />
         <div id="waiting-circle"></div>
@@ -204,7 +217,7 @@ const char *html = R"(
 
         <br />
         <div class="chat-box">
-          <textarea id="input-box" tabindex="0" data-id="root" required placeholder="Type message..."></textarea>
+          <textarea id="input-box" tabindex="0" data-id="root" required placeholder="Type your message..."></textarea>
           <button id="send-button" class="btn" data-id="root">Send</button>
         </div>
         <br />
@@ -218,11 +231,13 @@ const char *html = R"(
     const receiveBox = document.getElementById("receive-box");
     const sendButton = document.getElementById("send-button");
     const waiting_circle = document.getElementById("waiting-circle");
+    //const invoke_method = document.getElementById("chat-selection").value;
 
     let message;
     let debounceTimer;
     let intervalId;
 
+    //console.log(invoke_method);
 
     waiting_circle.style.display = "none";
 
@@ -254,25 +269,28 @@ const char *html = R"(
       intervalId = setInterval(async () => {
         try {
           const response = await fetch("/receiveTextMessage");
+          //console.log("Received response:", response);
 
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
 
           const data = await response.json();
+          console.log("Parsed JSON data:", data);
 
-          if (data.data.choices && data.data.choices.length > 0) {
+          if (data.choices && data.choices.length > 0 && data.choices[0].message) {
             waiting_circle.style.display = "none";
-            const aiResponse = data.data.choices[0].content
+            const aiResponse = data.choices[0].message.content
               .replace(/^\"\s([\s\S]+)\"$/, "$1")
               .replace("\"", "")
-              .replace("\\", "")
-              .replaceAll("\\\\n\\\\n", "\n")
-              .replaceAll("\\\\nn", "\n")
-              .replaceAll("\\n", "\n")
-              .replaceAll("\\\\", "");
+              .replace(/\\/g, "") // Removed all \
+              .replaceAll("\\n\\n", "\n") // Corrected regex
+              .replaceAll("\\nn", "\n") // Corrected regex
+              .replaceAll("\\n", "\n");
             displayMessages(message, aiResponse);
             clearInterval(intervalId);
+
+            //console.log(aiResponse);
           } else {
             waiting_circle.style.display = "flex";
             console.error("No choices found in the response.");
@@ -283,6 +301,7 @@ const char *html = R"(
       }, 3000);
     }
 
+
     function displayMessages(userMessage, aiResponse) {
       userMessageElement.innerHTML = marked.parse(userMessage);
       receiveBox.innerHTML = marked.parse(aiResponse);
@@ -292,3 +311,5 @@ const char *html = R"(
 
 </html>
 )";
+
+#endif

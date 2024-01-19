@@ -7,6 +7,8 @@ void asyncMessage(AsyncWebServer &server, HTTPClient &http_id, DynamicJsonDocume
     request->send(200, "text/html", html);
   });
 
+  server.begin();
+
   server.on("/send", HTTP_GET, [&responseMessage, &userMessage, &checkEmpty](AsyncWebServerRequest *request) {
     responseMessage.clear();
     userMessage = request->getParam("message")->value();
@@ -22,8 +24,8 @@ void asyncMessage(AsyncWebServer &server, HTTPClient &http_id, DynamicJsonDocume
 
 
   server.on("/receiveTextMessage", HTTP_GET, [&http_id, &doc, &JsonToken, &responseMessage](AsyncWebServerRequest *request) {
-    const char *getMessage = doc["data"]["task_id"];
-    String web_search_id = "https://open.bigmodel.cn/api/paas/v3/model-api/-/async-invoke/" + String(getMessage);  //GET Method(+below)
+    const char *getMessage = doc["id"];
+    String web_search_id = "https://open.bigmodel.cn/api/paas/v4/async-result/" + String(getMessage);  //GET Method(+below)
 
     http_id.begin(web_search_id);
     http_id.addHeader("Accept", "application/json");
@@ -37,37 +39,49 @@ void asyncMessage(AsyncWebServer &server, HTTPClient &http_id, DynamicJsonDocume
     }
     request->send(200, "text/html", responseMessage);
   });
-
-  server.begin();
 }
 
-void loopingSetting(HTTPClient &http, DynamicJsonDocument &doc, String &JsonToken, String &userMessage, String &invokeChoice, bool &checkEmpty) {
-  const char *async_web_hook = "https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/async-invoke";  //New ChatGLM3 async
+void loopingSetting(HTTPClient &http, String &LLM, DynamicJsonDocument &doc, String &JsonToken, String &userMessage, String &invokeChoice, bool &checkEmpty) {
+  const char *async_web_hook = "https://open.bigmodel.cn/api/paas/v4/async/chat/completions";  //New ChatGLM4 async
 
   if (invokeChoice == "Async_invoke") {
     if (checkEmpty) {
-      http.begin(async_web_hook);
-      http.addHeader("Accept", "application/json");
-      http.addHeader("Content-Type", "application/json; charset=UTF-8");
-      http.addHeader("Authorization", JsonToken);
-      // String metaData = "\"meta\": {\"user_info\": \"" + String(user_info) + "\", \"bot_info\": \"" + String(bot_info) + "\", \"bot_name\": \"" + String(bot_name) + "\", \"user_name\": \"" + String(user_name) + "\"}";
-      // String payloadMessage = "{\"prompt\": [{\"role\": \"" + String(role) + "\", \"content\": \"" + userMessage + "\"}], " + metaData + "}";
-      String payloadMessage = "{\"prompt\": \"" + userMessage + "\"}";
-      // String payloadMessage = "{\"prompt\": [{\"role\": \"" + String(role) + "\", \"content\": \"" + userMessage + "\"}], \"temperature\": \"" + temperature + "\", \"top_p\": \"" + top_p + "\"}";
+      int maxRetries = 5;  // 最大重试次数
+      int retryCount = 0;
 
-      int httpResponseCode = http.POST(payloadMessage);
-      if (httpResponseCode > 0) {
-        String messages = http.getString();
-        DeserializationError error = deserializeJson(doc, messages);
-        if (error) {
-          Serial.print(F("JSON parsing failed: "));
-          Serial.println(F(error.c_str()));
+      while (retryCount < maxRetries) {
+        http.begin(async_web_hook);
+        http.addHeader("Accept", "application/json");
+        http.addHeader("Content-Type", "application/json; charset=UTF-8");
+        http.addHeader("Authorization", JsonToken);
+
+        String payloadMessage = "{\"model\":\"" + LLM + "\", \"messages\":[{\"role\":\"system\",\"content\":\"" + String(system_role) + "\"},{\"role\":\"user\",\"content\":\"" + userMessage + "\"}]}";
+
+        int httpResponseCode = http.POST(payloadMessage);
+
+        //Serial.println(httpResponseCode);  //Debug
+
+        if (httpResponseCode > 0) {
+          String messages = http.getString();
+
+          //Serial.println(messages);  //debug
+
+          DeserializationError error = deserializeJson(doc, messages);
+          if (error) {
+            Serial.print(F("JSON parsing failed: "));
+            Serial.println(F(error.c_str()));
+          }
+          break;
+        } else if (httpResponseCode == -2) {
+          retryCount++;
+          delay(500);  // 可以根据需求调整重试间隔
         }
       }
     }
-    checkEmpty = false;
     http.end();
+    checkEmpty = false;
   }
 }
+
 
 #endif

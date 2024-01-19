@@ -8,11 +8,11 @@ Use the official asynchronous calling method to request its API. The API is obta
 
 API receive : https://open.bigmodel.cn/
 
-![1](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/877319fa-c688-43c4-b833-da10deaf2428)
+![1](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/2224c46a-0d0d-4c5e-8a09-cdfaf2c7cc46)
 
 ## Please Following Steps below⚠️:
 
-### Steps 1
+### Step 1
 Download Arduino IDE and install it. Open the IDE and find the File -> Perference. 
 > Please Use ESP32 Addritional boards manager URLs. 
 
@@ -29,10 +29,8 @@ These are libraries for this project:
 #include <time.h>               //build in
 #include <HTTPClient.h>         //find from library
 ```
-### Step 3(Hard step) 🤨
-FInd the library folder and find the CustomJWT Folder.  (I also upload `CustomJWT.h` file☝️)
-
-# `(Watch here!)`
+### Step 3 🤨
+FInd the library folder and find the CustomJWT Folder.  (I also upload `CustomJWT.h` file, Directly replace with me **CustomJWT** ☝️)
 
 Find the CustomJWT.h file in src folder. to add some code in CustomJWT(........) (in brackets)
 
@@ -52,7 +50,7 @@ there got a problem for Library JWT library(The Library name called: CustomJWT)
 ```sprintf(headerJSON, "{\"alg\":\"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg, typ, sign_type);```
 
 ### Step4 📄
-Paste the project for `ChatGLM.ino` and `index.h` into your own project folder and start it to change your personal API and WiFI(You can change your own local the NTP) and even you can design your personal Webpage for `index.h` file
+Place the **ChatGLM.ino** and **index.h** projects into your own project folder with the name: ChatGLM (here the folder name needs to be the same as the *.ino file). You can change your personal **Request API** and **WiFI**, even change the role content of **system_role** and **NTP** network time server, and you can even add a new **index.h** file to **index.h**.
 
 ### Step 5 💻
 Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP32 board to PC, Mine is ESP32-S3
@@ -62,7 +60,8 @@ Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP3
 
 > Finally Happy Flashing your ESP32 device! 😄🥇 
 
-
+## Other Questions:
+> Currently the latest support for ChatGLM-4 with integrated AI roleplaying content, this one removes the SSE requests from version 0.0.2. Since the official documentation is a large-scale revision that basically > combines streaming and synchronous requests into one, I'll leave the synchronous requests here, and if you have any other questions, you can start a **Discussion** or start an **Issue**, and I'll answer them for > you when I see them! Also fork this project thanks!
 ---
 
 Last thanks to @JoinChang and other libraries providers 👍

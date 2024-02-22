@@ -20,15 +20,18 @@ Download Arduino IDE and install it. Open the IDE and find the File -> Perferenc
 Download the Project and Download libraries. (Build in just use it, otherwise download it)
 These are libraries for this project:
 ```
-#include <Arduino.h>            //build in 
+#include <Arduino.h>            //build in
 #include <CustomJWT.h>          //find from library
 #include <ESPAsyncWebServer.h>  // Get from https://github.com/me-no-dev/ESPAsyncWebServer
 #include <ArduinoJson.h>        //find from library
 #include <WiFiClientSecure.h>   //build in
 #include <WiFiUdp.h>            //build in
-#include <time.h>               //build in
 #include <HTTPClient.h>         //find from library
+#include <NTPClient.h>          //find from library
+#include <queue>                //build in
+#include <SPIFFS.h>             //build in
 ```
+
 ### Step 3 🤨
 FInd the library folder and find the CustomJWT Folder.  (I also upload `CustomJWT.h` file, Directly replace with me **CustomJWT** ☝️)
 
@@ -53,10 +56,15 @@ there got a problem for Library JWT library(The Library name called: CustomJWT)
 Place the **ChatGLM.ino** and **index.h** projects into your own project folder with the name: ChatGLM (here the folder name needs to be the same as the *.ino file). You can change your personal **Request API** and **WiFI**, even change the role content of **system_role** and **NTP** network time server, and you can even add a new **index.h** file to **index.h**.
 
 ### Step 5 💻
-Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP32 board to PC, Mine is ESP32-S3
+Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP32 board to PC, Mine is **ESP32-S3-N8R2**
 
 
 ![Image](https://user-images.githubusercontent.com/56761243/268492784-49fc02d8-060d-4898-9d80-15b4fe50ea07.png)
+
+And my Arduino Setting is：
+
+![1](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/71ffd2fa-ee0e-47d1-84da-75165d08d424)
+
 
 > Finally Happy Flashing your ESP32 device! 😄🥇 
 

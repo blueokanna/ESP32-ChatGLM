@@ -1,6 +1,3 @@
-#ifndef WEB_H
-#define WEB_H
-
 const char *html = R"(
 <!DOCTYPE html>
 <html>
@@ -311,5 +308,3 @@ const char *html = R"(
 
 </html>
 )";
-
-#endif

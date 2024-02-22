@@ -1,7 +1,7 @@
 #ifndef ASYNC_INVOKE_H
 #define ASYNC_INVOKE_H
 
-void asyncMessage(AsyncWebServer &server, HTTPClient &http_id, DynamicJsonDocument &doc, String &JsonToken, String &responseMessage, String &userMessage, bool &checkEmpty) {
+void asyncMessage(AsyncWebServer &server, HTTPClient &http_id, DynamicJsonDocument &doc, DynamicJsonDocument &formattedDoc, DynamicJsonDocument &createDoc, String &JsonToken, String &responseMessage, String &userMessage, bool &checkEmpty) {
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(200, "text/html", html);
@@ -23,8 +23,9 @@ void asyncMessage(AsyncWebServer &server, HTTPClient &http_id, DynamicJsonDocume
   });
 
 
-  server.on("/receiveTextMessage", HTTP_GET, [&http_id, &doc, &JsonToken, &responseMessage](AsyncWebServerRequest *request) {
+  server.on("/receiveTextMessage", HTTP_GET, [&http_id, &doc, &formattedDoc, &JsonToken, &createDoc, &userMessage, &responseMessage](AsyncWebServerRequest *request) {
     const char *getMessage = doc["id"];
+
     String web_search_id = "https://open.bigmodel.cn/api/paas/v4/async-result/" + String(getMessage);  //GET Method(+below)
 
     http_id.begin(web_search_id);
@@ -33,7 +34,36 @@ void asyncMessage(AsyncWebServer &server, HTTPClient &http_id, DynamicJsonDocume
     http_id.addHeader("Authorization", JsonToken);
     int httpResponseIDCode = http_id.GET();
     if (httpResponseIDCode > 0) {
-      responseMessage = http_id.getString();
+      String answer_messages = http_id.getString();
+
+      DeserializationError error = deserializeJson(doc, answer_messages);
+      if (!error) {
+        String responseTempMessage = doc["choices"][0]["message"]["content"].as<String>();
+
+        responseTempMessage.replace("\"", "");
+        responseTempMessage.replace("\\n\\n", "\n");
+        responseTempMessage.replace("\\nn", "\n");
+        responseTempMessage.replace("\\n", "\n");
+        responseTempMessage.replace("\\", "");
+        responseTempMessage.replace("\null", "");
+        responseTempMessage.replace("null", "");
+
+        JsonArray choicesArray = formattedDoc.createNestedArray("choices");
+        JsonObject choice = choicesArray.createNestedObject();
+        JsonObject json_message = choice.createNestedObject("message");
+        json_message["role"] = assistant_role;
+        json_message["content"] = responseTempMessage;
+
+
+        addHistoryToFile(createDoc, user_role, userMessage);
+        addHistoryToFile(createDoc, assistant_role, responseTempMessage);
+
+        serializeJson(formattedDoc, responseMessage);
+      }
+      if (FileSizeChecker()) {
+        return;
+      }
+
     } else {
       responseMessage = "Error: External API request failed!";
     }
@@ -41,23 +71,22 @@ void asyncMessage(AsyncWebServer &server, HTTPClient &http_id, DynamicJsonDocume
   });
 }
 
-void loopingSetting(HTTPClient &http, String &LLM, DynamicJsonDocument &doc, String &JsonToken, String &userMessage, String &invokeChoice, bool &checkEmpty) {
+
+void looping_async_Setting(HTTPClient &http, DynamicJsonDocument &doc, String &JsonToken, String &userMessage, String &invokeChoice, bool &checkEmpty) {
   const char *async_web_hook = "https://open.bigmodel.cn/api/paas/v4/async/chat/completions";  //New ChatGLM4 async
 
   if (invokeChoice == "Async_invoke") {
     if (checkEmpty) {
-      int maxRetries = 5;  // 最大重试次数
+      int maxRetries = 5;  // Maximum number of retries
       int retryCount = 0;
 
-      while (retryCount < maxRetries) {
+      while (userMessage.length() > 0 && retryCount < maxRetries) {
         http.begin(async_web_hook);
         http.addHeader("Accept", "application/json");
         http.addHeader("Content-Type", "application/json; charset=UTF-8");
         http.addHeader("Authorization", JsonToken);
 
-        String payloadMessage = "{\"model\":\"" + LLM + "\", \"messages\":[{\"role\":\"system\",\"content\":\"" + String(system_role) + "\"},{\"role\":\"user\",\"content\":\"" + userMessage + "\"}]}";
-
-        int httpResponseCode = http.POST(payloadMessage);
+        int httpResponseCode = http.POST(messageJSON(userMessage, false));
 
         //Serial.println(httpResponseCode);  //Debug
 
@@ -74,7 +103,7 @@ void loopingSetting(HTTPClient &http, String &LLM, DynamicJsonDocument &doc, Str
           break;
         } else if (httpResponseCode == -2) {
           retryCount++;
-          delay(500);  // 可以根据需求调整重试间隔
+          delay(600);  // Retry interval can be adjusted on demand
         }
       }
     }

@@ -32,7 +32,7 @@ void syncMessage(AsyncWebServer &server, String &responseMessage, String &userMe
   });
 }
 
-void loopingSetting(HTTPClient &http, String &LLM, String &JsonToken, String &responseMessage, String &userMessage, String &invokeChoice, bool &checkEmpty) {
+void looping_sync_Setting(HTTPClient &http, DynamicJsonDocument &doc, DynamicJsonDocument &formattedDoc, DynamicJsonDocument &createDoc, String &JsonToken, String &responseMessage, String &userMessage, String &invokeChoice, bool &checkEmpty) {
   const char *sync_web_hook = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
 
   if (invokeChoice == "Sync_invoke") {
@@ -47,20 +47,48 @@ void loopingSetting(HTTPClient &http, String &LLM, String &JsonToken, String &re
         http.addHeader("Content-Type", "application/json; charset=UTF-8");
         http.addHeader("Authorization", JsonToken);
 
-        String payloadMessage = "{\"model\":\"" + LLM + "\", \"messages\":[{\"role\":\"system\",\"content\":\"" + String(system_role) + "\"},{\"role\":\"user\",\"content\":\"" + userMessage + "\"}],\"stream\":false}";
+        //String payloadMessage = "{\"model\":\"" + LLM + "\", \"messages\":[{\"role\":\"system\",\"content\":\"" + String(system_role) + "\"},{\"role\":\"user\",\"content\":\"" + userMessage + "\"}],\"stream\":false}";
 
-        int httpResponseCode = http.POST(payloadMessage);
+        int httpResponseCode = http.POST(messageJSON(userMessage,false));
         responseMessage.clear();
 
         if (httpResponseCode > 0) {
-          responseMessage = http.getString();
+          String responseAnswer = http.getString();
+
+          DeserializationError error = deserializeJson(doc, responseAnswer);
+          if (!error) {
+            String responseTempMessage = doc["choices"][0]["message"]["content"].as<String>();
+
+            responseTempMessage.replace("\"", "");
+            responseTempMessage.replace("\\n\\n", "\n");
+            responseTempMessage.replace("\\nn", "\n");
+            responseTempMessage.replace("\\n", "\n");
+            responseTempMessage.replace("\\", "");
+            responseTempMessage.replace("\null", "");
+            responseTempMessage.replace("null", "");
+
+            JsonArray choicesArray = formattedDoc.createNestedArray("choices");
+            JsonObject choice = choicesArray.createNestedObject();
+            JsonObject json_message = choice.createNestedObject("message");
+            json_message["role"] = assistant_role;
+            json_message["content"] = responseTempMessage;
+
+
+            addHistoryToFile(createDoc, user_role, userMessage);
+            addHistoryToFile(createDoc, assistant_role, responseTempMessage);
+
+            serializeJson(formattedDoc, responseMessage);               //Serialisation to get responseMessage
+          }
+          if(FileSizeChecker()){
+            return;
+          }
           //Serial.println(responseMessage);  //debug
           break;
         } else {
           retryCount++;
           Serial.print(F("HTTP POST request failed, error: "));
           Serial.println(httpResponseCode);
-          delay(500);
+          delay(500);           // Retry interval can be adjusted on demand
         }
       }
     }

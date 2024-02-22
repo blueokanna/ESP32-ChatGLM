@@ -69,7 +69,7 @@ And my Arduino Setting is：
 > Finally Happy Flashing your ESP32 device! 😄🥇 
 
 ## Other Questions:
-> Currently the latest support for ChatGLM-4 with integrated AI roleplaying content, this one removes the SSE requests from version 0.0.2. Since the official documentation is a large-scale revision that basically combines streaming and synchronous requests into one, I'll leave the synchronous requests here, and if you have any other questions, you can start a **Discussion** or start an **Issue**, and I'll answer them for you when I see them! Also fork this project thanks!
+> Currently supports **ChatGLM-4** models, if you need **ChatGLM-3-Turbo** models you can download this project and modify it in **utiltools.h** file. AI roleplaying is also currently integrated. By default, it uses asynchronous calls and non-role-playing **prompt**, if you have other questions, you can handin a **Discussion** or start an **Issue** and I will answer your questions if I see them as soon as possible! You are also very welcome to **fork** this project, and if you don't mind you can also give my project a ⭐! **Thanks!**
 ---
 
 Last thanks to @JoinChang and other libraries providers 👍

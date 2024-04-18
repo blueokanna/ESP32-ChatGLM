@@ -1,14 +1,22 @@
-# 乐鑫 ESP32-ChatGLM 大模型自定义对话 - [English Docs](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README.md)
+# :school:乐鑫 ESP32 ChatGLM 大模型自定义对话 - [English Docs](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README.md)
 :octocat: 使用乐鑫 ESP32 平台来享受单片机上的开放的大语言模型 **ChatGLM** ！
 
 ----
 
-## 关于本次的调用 （ChatGLM 项目版本：0.0.5）
+## 关于本次的调用
+| Number | Parts | Description |
+| :-------------: | :-------------: | :----- |
+| 1 | Name | 	:vhs: ESP32 ChatGLM |
+| 2 | Version  | 🕸 0.0.5 |
+| 3 | Support Audio and Microphone| :loudspeaker: Option (Yes) |
+| 4 | Support Web | 🎭 Yes |
+| 5 | Support Mobile | 📱 No |
+
 使用官方的异步调用方式来请求其 API。 ChatGLM API 可从以下网站获取：
 
 :paperclip: API 获取地址：https://open.bigmodel.cn/ 
 
-> 主页如下（可能会更改）：
+> 	:pencil:主页如下（可能会更改）：
 
 ![Screenshot 2023-10-15 205941](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/b5614ed3-b4e9-43e3-ac01-77c2747f9774)
 
@@ -70,7 +78,7 @@ sprintf(headerJSON, "{\"alg\":\"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg�
 ![1](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/e1d1d8e2-d888-4c0e-bb44-677de59664eb)
 
 
-> 终于可以愉快烧录你的 **ESP32** 设备了！ 😄🥇
+> 🤖终于可以愉快烧录你的 **ESP32** 设备了！ 😄🥇
 
 <br>
 <br>
@@ -160,11 +168,11 @@ void speech(String data) {
 ```
 
 
-## 其他问题：
+## ❓其他问题：
 > 目前最新支持 **ChatGLM-4** 的模型，如果需要 **ChatGLM-3-Turbo** 的模型可以下载本项目在 **utiltools.h** 文件进行修改。目前也集成了 AI 角色扮演的内容。默认情况下是使用异步调用且使用的是非角色扮演的 **prompt**，如果您还有其他问题，可以> 发起 **讨论（Discussion）** 或者发起 **Issue**，看到的话，我会为你解答！同时也非常欢迎大家来 **fork** 本项目，如果不介意的话也可以给我的项目点个⭐！ **非常感谢！**
 ----
 
 最后感谢 Github 的 **@JoinChang** 和其他库开发者👍
 
 ## 💶 捐赠 (时刻感谢你对我的支持! :smile:):
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](                    buymeacoffee.com/blueokanna                )
+<p><a href="https://www.buymeacoffee.com/blueokanna"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="https://www.buymeacoffee.com/blueokanna" /></a></p><br><br>

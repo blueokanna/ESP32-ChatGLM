@@ -1,19 +1,19 @@
 # 乐鑫 ESP32-ChatGLM 大模型自定义对话 - [English Docs](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README.md)
-使用乐鑫 ESP32 平台来享受单片机上的开放的大语言模型 **ChatGLM** ！
+:octocat: 使用乐鑫 ESP32 平台来享受单片机上的开放的大语言模型 **ChatGLM** ！
 
 ----
 
-## 关于本次的调用
+## 关于本次的调用 （ChatGLM 项目版本：0.0.5）
 使用官方的异步调用方式来请求其 API。 ChatGLM API 可从以下网站获取：
 
-API 获取地址：https://open.bigmodel.cn/ 
+:paperclip: API 获取地址：https://open.bigmodel.cn/ 
 
 > 主页如下（可能会更改）：
 
 ![Screenshot 2023-10-15 205941](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/b5614ed3-b4e9-43e3-ac01-77c2747f9774)
 
 
-## 请按照以下步骤操作：
+## :one:请按照以下步骤操作⚠️：
 
 ### 步骤 1
 下载 **Arduino IDE** 并安装。 打开 `Arduino IDE` 并找到 File -> Perference。
@@ -24,15 +24,20 @@ API 获取地址：https://open.bigmodel.cn/
 这些是该项目的库：
 ````
 #include <Arduino.h>            //内置
-#include <CustomJWT.h>          //从库中寻找
-#include <ESPAsyncWebServer.h>  //从 https://github.com/me-no-dev/ESPAsyncWebServer 获取
-#include <ArduinoJson.h>        //从库中寻找
+#include <CustomJWT.h>          //从库中找到安装
+#include <ESPAsyncWebServer.h>  //从 https://github.com/me-no-dev/ESPAsyncWebServer 找到下载
+#include <ArduinoJson.h>        //从库中找到安装
 #include <WiFiClientSecure.h>   //内置
 #include <WiFiUdp.h>            //内置
-#include <HTTPClient.h>         //从库中寻找
-#include <NTPClient.h>          //从库中寻找
+#include <HTTPClient.h>         //内置
+#include <NTPClient.h>          //从库中找到安装
 #include <queue>                //内置
 #include <SPIFFS.h>             //内置
+#include <SPI.h>                //内置
+#include <SoftwareSerial.h>     //从库中找到安装
+#include "UTF8ToGB2312.h"       //从库中找到安装
+#include <esp_heap_caps.h>      //内置
+#include "base64.h"             //内置
 ````
 
 ### 步骤 3 🤨
@@ -67,9 +72,99 @@ sprintf(headerJSON, "{\"alg\":\"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg�
 
 > 终于可以愉快烧录你的 **ESP32** 设备了！ 😄🥇
 
+<br>
+<br>
+
+# :two: 高级操作：麦克风输入和音频输出:
+这里我们将使用 Max9814 麦克风和 SNR9816VR_TTS 模块，您可以在**淘宝（中国）** 和 **阿里巴巴（全球）** 找到这些模块。
+
+**将所有模块连接在一起:**
+
+![IMG_20240418_145303](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/4420cc73-90d2-49f6-baaf-a4797ad01301)
+
+```
+#define MYPORT_TX 0      //连接 SNR9816VR_TTS RX_PIN 与 ESP32-S3 PIN_0
+#define MYPORT_RX 1      //连接 SNR9816VR_TTS TX_PIN 与 ESP32-S3 PIN_RX
+#define audio_out 4      //将 ESP32-S3 PIN_4 与 MAX9814 OUT 连接起来
+#define audio_keys 6     //用按钮连接 ESP32-S3 PIN_6（默认为高电平）
+#define disk_format 7    //用按钮连接 ESP32-S3 PIN_7（默认为高电平）
+```
+
+![max9814-mikrofon-964239](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/ddc6a7d5-23ea-46b5-9c3d-1412338d5049)
+
+> 如果浮空 AR，则语音增益为 60 分贝
+
+> 如果将 AR 连接到 3.3V，它将获得 50 db 的语音增益
+
+> 如果将 AR 连接到地线，则语音增益为 40 分贝    <--- 我的默认选择
+
+## :alarm_clock:onHardWareTimer code here:
+
+该代码是一个处理定时器中断的中断服务程序。audio_out 数据采集逻辑在定时器中断服务例程中实现。当满足条件时（如 audio_start_flag 设置为 1），中断服务例程将从 audio_out 读取数据并存储，直至采集完成。
+
+```
+void IRAM_ATTR onHardWareTimer() {
+  portENTER_CRITICAL_ISR(&timerMux);
+  if (audio_start_flag == 1) {
+    audio_output[var_num] = analogRead(audio_out);
+    var_num++;
+    if (var_num >= data_len) {
+      audio_complete_flag = 1;
+      audio_start_flag = 0;
+      var_num = 0;
+    }
+  }
+  portEXIT_CRITICAL_ISR(&timerMux);
+}
+```
+> 如果您想了解这部分内容，可以打开我的项目找到 **<ChatGLM.ino>** 这个文件
+
+### :sound: SNR9816VR_TTS 模块
+
+本模块仅支持 GBK2312 中文版（我的模块不支持英文版，您可以购买英文版的 TTS 模块）。
+
+根据图片显示，您需要 5V 电压来驱动电路板，但我的 ESP32 S3 不支持 5V 电压输出（ESP32C3 有 5V 输出）：
+![Screenshot 2024-04-18 160234](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/1210638f-a9c5-44f5-9ce0-77a81a2251fa)
+
+### 这里我们只需要语音方法:
+该函数将字符串转换为 GB2312 编码格式并发送至串行设备。
+
+```
+void speech(String data) {
+  String gb2312_str = GB.get(data);
+
+  unsigned int dat_len = gb2312_str.length() + 3;
+
+  unsigned char head[dat_len + 3];
+  head[0] = 0xFD;          // head byte
+  head[1] = dat_len >> 8;  // length byte 1
+  head[2] = dat_len;       // length byte 2
+  head[3] = 0x01;          // cmd byte
+  head[4] = 0x01;          // para byte
+
+  for (int i = 0; i < gb2312_str.length(); i++) {
+    head[i + 5] = gb2312_str[i];
+  }
+
+  unsigned char xor_value = head[0];
+  for (int i = 1; i < dat_len + 2; i++) {            //遍历报头数组（报头起始标志除外），执行异或运算，并计算校验和值。
+    xor_value ^= head[i];                            //将校验和值存储在标头的最后一个字节中
+  }
+  head[dat_len + 2] = xor_value;
+
+  myPort.write(head, dat_len + 3);
+
+  delay(gb2312_str.length() * 10);                   //延迟一段时间，以确保接收器有足够的时间处理接收到的数据。延迟时间取决于 GB2312 字符串的长度。
+}
+
+```
+
 
 ## 其他问题：
 > 目前最新支持 **ChatGLM-4** 的模型，如果需要 **ChatGLM-3-Turbo** 的模型可以下载本项目在 **utiltools.h** 文件进行修改。目前也集成了 AI 角色扮演的内容。默认情况下是使用异步调用且使用的是非角色扮演的 **prompt**，如果您还有其他问题，可以> 发起 **讨论（Discussion）** 或者发起 **Issue**，看到的话，我会为你解答！同时也非常欢迎大家来 **fork** 本项目，如果不介意的话也可以给我的项目点个⭐！ **非常感谢！**
 ----
 
 最后感谢 Github 的 **@JoinChang** 和其他库开发者👍
+
+## 💶 捐赠 (时刻感谢你对我的支持! :smile:):
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](                    buymeacoffee.com/blueokanna                )

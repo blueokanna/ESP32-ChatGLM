@@ -1,20 +1,23 @@
-# :school:乐鑫 ESP32 ChatGLM 大模型自定义对话 - [English Docs](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README.md)
-:octocat: 使用乐鑫 ESP32 平台来享受单片机上的开放的大语言模型 **ChatGLM** ！
+# :school:乐鑫 ESP32 ChatGLM 大语音模型自定义对话 - [English Docs](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README.md)
+:octocat: 使用乐鑫 ESP32 平台来享受单片机上的开放的大语言对话模型 **ChatGLM** ！
 
 ----
 
-## 关于本次的调用
-| Number | Parts | Description |
+## ⚛️关于本次的调用
+| 编号 | 项目类型 | 项目说明 |
 | :-------------: | :-------------: | :----- |
-| 1 | Name | 	:vhs: ESP32 ChatGLM |
-| 2 | Version  | 🕸 0.0.5 |
-| 3 | Support Audio and Microphone| :loudspeaker: Option (Yes) |
-| 4 | Support Web | 🎭 Yes |
-| 5 | Support Mobile | 📱 No |
+| 1 | 项目名称 | 	:vhs: ESP32 ChatGLM |
+| 2 | 项目版本  | 🕸 版本 0.0.5 |
+| 3 | 支持语音和音频输出 | :loudspeaker: 可选*（支持） |
+| 4 | 支持网页 | 🎭 支持 |
+| 5 | 支持移动客户端App | 📱 不支持 |
 
-使用官方的异步调用方式来请求其 API。 ChatGLM API 可从以下网站获取：
+<br>
+<br>
 
-:paperclip: API 获取地址：https://open.bigmodel.cn/ 
+🎊 **使用官方的异步调用方式来请求其 API**
+
+:paperclip: ChatGLM API 获取地址：https://open.bigmodel.cn/ 
 
 > 	:pencil:主页如下（可能会更改）：
 
@@ -69,16 +72,16 @@ sprintf(headerJSON, "{\"alg\":\"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg�
 将 **ChatGLM.ino** 和 **index.h** 项目放入您自己的项目文件夹中，文件夹名称为：ChatGLM（这里文件夹名称需要和 *.ino 文件保持一致）。你可以更改您的个人 **请求API** 和 **WiFI** ,甚至可以更改 **system_role** 的角色内容以及 **NTP** 网络时间服务器，甚至您可以为**index.h** 文件
 
 ### 步骤 5
-通过串口和电脑的 USB 连接 **ESP32** 模块。 请选择正确的 **ESP32** 板以及你的 **Arduino** 设置，我的是 **ESP32-S3-N8R2** 的单片机
+通过串口和电脑的 USB 连接 **ESP32** 模块。 请选择正确的 **ESP32** 板以及你的 **Arduino** 设置，我的是 **YD-ESP32-S3-N16R8** 的单片机
 
-![图片](https://user-images.githubusercontent.com/56761243/268492784-49fc02d8-060d-4898-9d80-15b4fe50ea07.png)
+![Screenshot 2024-04-18 200023](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/a27d3172-9052-4920-af5e-b15dd5855ce8)
 
 我的 Arduino 设置为：
 
 ![1](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/e1d1d8e2-d888-4c0e-bb44-677de59664eb)
 
 
-> 🤖终于可以愉快烧录你的 **ESP32** 设备了！ 😄🥇
+> 🤖终于可以愉快烧录你的 **ESP32 S3** 设备了！ 😄🥇
 
 <br>
 <br>
@@ -86,7 +89,7 @@ sprintf(headerJSON, "{\"alg\":\"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg�
 # :two: 高级操作：麦克风输入和音频输出:
 这里我们将使用 Max9814 麦克风和 SNR9816VR_TTS 模块，您可以在**淘宝（中国）** 和 **阿里巴巴（全球）** 找到这些模块。
 
-**将所有模块连接在一起:**
+**如图，将所有模块连接在一起:**
 
 ![IMG_20240418_145303](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/4420cc73-90d2-49f6-baaf-a4797ad01301)
 
@@ -102,9 +105,10 @@ sprintf(headerJSON, "{\"alg\":\"%s\",\"typ\":\"%s\",\"sign_type\":\"%s\"}", alg�
 
 > 如果浮空 AR，则语音增益为 60 分贝
 
-> 如果将 AR 连接到 3.3V，它将获得 50 db 的语音增益
+> 如果将 AR 连接到地线，则语音增益为 50 分贝    <--- 我的默认选择
 
-> 如果将 AR 连接到地线，则语音增益为 40 分贝    <--- 我的默认选择
+> 如果将 AR 连接到 3.3V，它将获得 40 db 的语音增益
+
 
 ## :alarm_clock:onHardWareTimer code here:
 

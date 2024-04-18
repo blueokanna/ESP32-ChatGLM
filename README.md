@@ -1,9 +1,9 @@
-# ESP32-ChatGLM for Custom Conversations - [中文文档](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README-zh.md)
+# :school:ESP32 ChatGLM for Custom Conversations - [中文文档](https://github.com/blueokanna/ESP32-ChatGLM/blob/main/README-zh.md)
 
 > Technological achievements from Tsinghua University --->
 > "ChatGLM" 🇨🇳 on Espressif's ESP32 platform by Arduino!
 
-# :octocat: ESP32-ChatGLM Project (Version 0.0.5)
+# :octocat: ESP32 ChatGLM Project (Version 0.0.5)
 Use the official asynchronous calling method to request its API. The API is obtained from the following websites:
 
 :paperclip: API receive : https://open.bigmodel.cn/

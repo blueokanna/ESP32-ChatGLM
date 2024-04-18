@@ -167,5 +167,5 @@ void speech(String data) {
 Last thanks to @JoinChang and other libraries providers 👍
 
 ## 💶 Donation (Thank you all the time! :smile:):
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](                    buymeacoffee.com/blueokanna                )
+<p><a href="https://www.buymeacoffee.com/blueokanna"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="https://www.buymeacoffee.com/blueokanna" /></a></p><br><br>
 

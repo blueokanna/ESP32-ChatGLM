@@ -3,8 +3,19 @@
 > Technological achievements from Tsinghua University --->
 > "ChatGLM" 🇨🇳 on Espressif's ESP32 platform by Arduino!
 
-# :octocat: ESP32 ChatGLM Project (Version 0.0.5)
-Use the official asynchronous calling method to request its API. The API is obtained from the following websites:
+#  ⚛️ESP32 ChatGLM Project
+
+| Number | Parts | Description |
+| :-------------: | :-------------: | :----- |
+| 1 | Name | 	:vhs: ESP32 ChatGLM |
+| 2 | Version  | 🕸 Version 0.0.5 |
+| 3 | Support Audio and Microphone| :loudspeaker: Option (Yes) |
+| 4 | Support Web | 🎭 Yes |
+| 5 | Support Mobile | 📱 No |
+
+<br>
+
+:octocat: Use the official asynchronous calling method to request its API. The API is obtained from the following websites:
 
 :paperclip: API receive : https://open.bigmodel.cn/
 
@@ -63,15 +74,14 @@ Place the **ChatGLM.ino** and **index.h** projects into your own project folder 
 ### Step 5 💻
 Connect the ESP32 Module by Serial Port and PC's USB. Please choose correct ESP32 board to PC, Mine is **YD-ESP32-S3-N16R8(v1.3)**
 
-
-![Image](https://user-images.githubusercontent.com/56761243/268492784-49fc02d8-060d-4898-9d80-15b4fe50ea07.png)
+![Screenshot 2024-04-18 200023](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/53df9f85-e0f3-4d9e-ae0d-8d210da2f5f8)
 
 And my Arduino Setting is：
 
 ![Screenshot 2024-04-18 153008](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/e4cbc1a5-de06-4cfd-8fe7-a57c41ca00de)
 
 
-> Finally Happy Flashing your ESP32 device! 😄🥇
+> Finally Happy Flashing your ESP32-S3 device! 😄🥇
 
 <br>
 <br>
@@ -94,7 +104,7 @@ The programme use Max9814 Microphone and SNR9816VR_TTS Module which you can find
 
 > If you flow AR that, it's gain 60db of Voice
 > 
-> If you connect AR to Ground, it's gain 50db of Voice    <--- I did
+> If you connect AR to Ground, it's gain 50db of Voice    <--- I choose
 
 > If you connect AR to 3.3V, it's gain 40 db of Voice
 
@@ -160,7 +170,7 @@ void speech(String data) {
 
 ```
 
-## Other Questions:
+## ❓Other Questions:
 > Currently supports **ChatGLM-4** models, if you need **ChatGLM-3-Turbo** models you can download this project and modify it in **utiltools.h** file. AI roleplaying is also currently integrated. By default, it uses asynchronous calls and non-role-playing **prompt**, if you have other questions, you can handin a **Discussion** or start an **Issue** and I will answer your questions if I see them as soon as possible! You are also very welcome to **fork** this project, and if you don't mind you can also give my project a ⭐! **Thanks!**
 ---
 

@@ -121,8 +121,7 @@ String messageJSON(String user_input, bool isStream) {
   userMessage["role"] = user_role;
   userMessage["content"] = lastMessages(user_role, user_input);
 
-  //json_request_body["model"] = "glm-4";  //Default is glm-4, You can change here for glm-3-turbo.
-  json_request_body["model"] = "glm-3-turbo";
+  json_request_body["model"] = chatglm_versions;
   json_request_body["messages"] = messages;
   json_request_body["stream"] = isStream;
   json_request_body["do_sample"] = true;

@@ -1,7 +1,53 @@
 #ifndef chatconfig_H
 #define chatconfig_H
 
-const char *ssid_1 = "Blueokanna's Mate 40 Pro";
+/*
+                                      .:<]??]]-~I`..                                      
+                                    ."I??]]?-_+_~l'.                                      
+                                  .!1tnnvnuuxj\()(]<"..                                   
+                                . InYYUCCCJYJzYvcrf|}:                                    
+                                . }LQwwZLJYXcccnnvXc\<                                    
+                                . {0dCnrr/)}}+~<>l!vUi                                    
+                               ..'?QOucXnrXc|)f(]-~?X:                                    
+                               . IC0CuczXnXZ_)Lc(<l}j:                                    
+                                 ^zmc(rnnfrz{~fr}!:{]".                                   
+                                . ~UcnLJYvcJY(uzx}>-;'..                                  
+                                ...nOQO0Lzxzu(rYc\|?"...                                  
+                                ..`zbhbqm0XXztfYu/Of:.. ..                                
+                                  .>rkmmqwmmZLv/-<c/> . ..                                
+                             .'""`^'}YXJLLLLUvt{_i}+^:'.                                  
+                          `I>+-}[ll<f11{{{11{{?ill<1!->I,''..                             
+                      ..;-[{}-{|1?_{]_+>>><l;l>l;l>?I~~_i;l"^..                           
+                      ..+]1{](()\\t\[_~<>>i!i_+!l!~[>~_+l!i;l;"'                          
+                     .."}\}~]((/|nCuj\{]?[--?1{?+<_1++}~<]<i>iI,.                         
+                      ^]-]~_)/jY0b0LCJXnnuxftxnnj)t|+}[>\\]+<>!l^ .                       
+                   .. '<)|/nXJCQphQY----佛系----|fx??1<1Qvt{]~i>I.. ..                    
+                   ..^rUXj(|{(xJmqCx//(]??-+<<~~+-++)-itOYv/1?_<<`. ..                    
+                   ..']xn|}[_}rQLLx\)[?+++?++++>~>>-[i<-CLXv/[-+<"  ..                    
+                   ..'1uxt)}](uQnrrf/t\||()}[}]~~i_~~-+<j0Lcj/|{]I ...                    
+                   . ;{[?-}})rUcjj/tjxjtt(111}-<~+??_+-~(Xx(}[]__l....                    
+                   .'__<>!l::l~{fzzzut\))){{}}{{)){}]}||{+:,l!>><!' ..                    
+                    ;UYzvrt1{_i;,i_?[](fffjnt/f/{+<<><<<_|j~<??-__' ..                    
+                    '{JmwZ0CCUXvnxxucutvuxjjxnzQn|]++?}{(fQp\__?_+. ..                    
+                      '!]ukkkkkhkbpwmZQzcXYzvnxrjnucUQZwqpdahLj}-I.     .                 
+                 ,<++><<i?tjxnxxffffjzqOQQOQQJLJXccf\|(\trf1[(\)?-<:""^"'.  .             
+             .`"':___+~<>>i!!!i!!>>>!<+_-?]?1{ii;>?)(1}}{1))())())((1{?!II^..             
+         . ."_++<>i>!>+<>~<>>>i!!>i<+~~~!~!+_((<_[nxcnrjrr\{[----+i;I;:""",'.             
+          '?(trjff//)1)][}[})((1{{{){}}_{?~{]]x??1f}->+}}tnr/(1}[]-++~<<<>>l;' .          
+         ._nurfvunnxxxnuvxf/t/tjxf((/(]1)][f}]\\])(1{+}/fttvcunnnxjjjt\|{?+~<,..          
+         ,zzccvcvunxj||jxt//jnvcf/tr/(|1{[\\[{\f[j/t/)/cjxvfnYXujftf/\({?-???i..          
+         'nUJXXzzcccccvccuvcnnrxucxrxur//xx)1(txvxxnzYunJcnYXrxYCUYYXXXzcvrt)i..          
+          [0CUJCCLOmZQJXcvzUXvXCXxvUCvncJXtftfn0LxXCJcCXcQQXzLYncXYUUYYXcnfj|" .          
+      .....-zZm00OZZ0Q0OZqOUYC0wqOLmZOJ0qmOYzYpkO0OZUU00ZLOZQQwZCJQwpddmOLc(: ..          
+       .`:!i-jJQZmqpppppppbpdpQmhoadbkahkoooha*oakkbhbdbpqwdbbbdbbqqddqZLc(~!I"'          
+      .....'''`^,:;l!i><~~+_-?]?]]]]]]]][]]][[]]]]]]]]]?]]??--_+~<>ilI:,^^^`''..          
+
+  Default is using ChatGLM 3 Turbo
+  You can replace it to your own
+  */
+
+
+const char *ssid_1 = "xxxxxxxxxxxxxxxxx";
 const char *ssid_2 = "xxxxxxxxxxxxxxxxx";
 const char *ssid_3 = "eduroam-xxxxxxxxx";
 
@@ -9,7 +55,7 @@ const char *identity_1 = "none";
 const char *identity_2 = "none";
 const char *identity_3 = "INDENTITY";
 
-const char *password_1 = "blue1234678950";
+const char *password_1 = "xxxxxxxxxxxxxx";
 const char *password_2 = "xxxxxxxxxxxxxx";
 const char *password_3 = "xxxxxxxxxxxxxx";
 
@@ -23,11 +69,14 @@ const char *bot_info = "Blueokanna's Chat Bots";
 const char *bot_name = "Bot_name";
 const char *user_name = "Blueokanna";
 
-const char *baidu_api = "C6iw7Y6CtSmM6tZSfUL17X7r";
-const char *baidu_secret = "g93Og9ioMu4kuJVFE59fDw3E5B3LtTjn";
+//<--------- Get Baidu Voice to Text: https://cloud.baidu.com/doc/SPEECH/index.html ---------------->
+const char *baidu_api = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";     //Replace Your Own Baidu API
+const char *baidu_secret = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";  //Replace Your Own Baidu Secret
 
-const char *version = "0.0.4";
-const char *setApiKey = "88f2cf7983ddd9068ce1590df0a977eb.2i4DUdG1rYgQnmt7";  //Get Api key from https://open.bigmodel.cn/
+const char *chatglm_versions = "glm-3-turbo";  //GLM 3 Turbo(You can use glm-4 in the next line)
+//const char* chatglm_versions = "glm-4";
+const char *version = "0.0.5";
+const char *setApiKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxx";  //Get Api key from https://open.bigmodel.cn/
 
 const char *HistoryfilePath = "/chat_history.json";
 
@@ -44,8 +93,8 @@ float top_p_float = 0.7;
 bool checkEmpty = false;
 bool wifiConnect = false;
 
-uint8_t tts_voice[] = { 0xFD, 0x00, 0x06, 0x01, 0x01, 0x5B, 0x76, 0x31, 0x5D }; //0x31 为主要音量调节（Main volume adjustment）
-uint8_t tts_speed[] = { 0xFD, 0x00, 0x06, 0x01, 0x01, 0x5B, 0x73, 0x34, 0x5D }; //0x34 为主要速度调节（Main speed adjustment）
+uint8_t tts_voice[] = { 0xFD, 0x00, 0x06, 0x01, 0x01, 0x5B, 0x76, 0x31, 0x5D };  //0x31 为主要音量调节（Main volume adjustment）
+uint8_t tts_speed[] = { 0xFD, 0x00, 0x06, 0x01, 0x01, 0x5B, 0x73, 0x34, 0x5D };  //0x34 为主要速度调节（Main speed adjustment）
 
 /*
 //English AI System Content Play :)
@@ -73,8 +122,6 @@ const char *concatenateStrings(const char *str1, const char *str2) {
 
   return result;
 }
-
-
 
 
 #endif

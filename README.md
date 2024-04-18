@@ -93,10 +93,11 @@ The programme use Max9814 Microphone and SNR9816VR_TTS Module which you can find
 ![max9814-mikrofon-964239](https://github.com/blueokanna/ESP32-ChatGLM/assets/56761243/ddc6a7d5-23ea-46b5-9c3d-1412338d5049)
 
 > If you flow AR that, it's gain 60db of Voice
+> 
+> If you connect AR to Ground, it's gain 50db of Voice    <--- I did
 
-> If you connect AR to 3.3V, it's gain 50 db of Voice
+> If you connect AR to 3.3V, it's gain 40 db of Voice
 
-> If you connect AR to Ground, it's gain 40db of Voice    <--- I did
 
 ## :alarm_clock:onHardWareTimer code here:
 

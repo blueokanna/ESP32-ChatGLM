@@ -55,7 +55,7 @@ void asyncMessage(AsyncWebServer &server, HTTPClient &http_id, DynamicJsonDocume
         json_message["content"] = responseTempMessage;
 
 
-        addHistoryToFile(createDoc, user_role, userMessage);
+        //addHistoryToFile(createDoc, user_role, userMessage);
         addHistoryToFile(createDoc, assistant_role, responseTempMessage);
 
         serializeJson(formattedDoc, responseMessage);

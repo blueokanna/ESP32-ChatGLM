@@ -1,6 +1,19 @@
 #ifndef UTIL_TOOL_H
 #define UTIL_TOOL_H
 
+String processResponseMessage(String message) {
+  String processedMessage = message;
+  processedMessage.replace("\"", "");
+  processedMessage.replace("\\n\\n", "\n");
+  processedMessage.replace("\\nn", "\n");
+  processedMessage.replace("\\n", "\n");
+  processedMessage.replace("\\", "");
+  processedMessage.replace("\null", "");
+  processedMessage.replace("null", "");
+
+  return processedMessage;
+}
+
 String addHistoryToFile(DynamicJsonDocument &HistoryDoc, String role, String content) {
   String jsonStr;
 
@@ -82,6 +95,8 @@ String lastMessages(String role, String messages) {
   String pattern = ",}";
   String replacement = "";
   String result = replacePattern(inputMessage + texts, pattern, replacement);
+
+  input.clear();
   return result;
 }
 
@@ -97,16 +112,17 @@ String messageJSON(String user_input, bool isStream) {
   DynamicJsonDocument messages(204800);
   DynamicJsonDocument json_request_body(327680);
 
+  /*
   JsonObject systemMessage = messages.createNestedObject();
   systemMessage["role"] = system_role;
   systemMessage["content"] = system_content;
-
+*/
   JsonObject userMessage = messages.createNestedObject();
   userMessage["role"] = user_role;
   userMessage["content"] = lastMessages(user_role, user_input);
 
-  json_request_body["model"] = "glm-4";  //Default is glm-4, You can change here for glm-3-turbo.
-  //json_request_body["model"] = "glm-3-turbo";
+  //json_request_body["model"] = "glm-4";  //Default is glm-4, You can change here for glm-3-turbo.
+  json_request_body["model"] = "glm-3-turbo";
   json_request_body["messages"] = messages;
   json_request_body["stream"] = isStream;
   json_request_body["do_sample"] = true;
@@ -118,7 +134,7 @@ String messageJSON(String user_input, bool isStream) {
 
   String result = replaceDoubleBackslashes(json_string);
 
-  Serial.println(result);
+  //Serial.println(result);         //debug
 
   return result;
 }
@@ -137,7 +153,7 @@ bool FileSizeChecker() {
 
   file.close();
 
-  if (fileSize >= 5500) {
+  if (fileSize >= 1024) {
     if (SPIFFS.remove(HistoryfilePath)) {
       Serial.println(F("File deleted successfully!"));
       return true;  // Returns true if the file was deleted successfully

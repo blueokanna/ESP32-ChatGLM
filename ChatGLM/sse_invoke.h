@@ -100,7 +100,7 @@ void looping_SSE_Setting(HTTPClient &http, DynamicJsonDocument &doc, DynamicJson
         json_message["role"] = assistant_role;
         json_message["content"] = responseTempMessage;
 
-        addHistoryToFile(createDoc, user_role, userMessage);
+        //addHistoryToFile(createDoc, user_role, userMessage);
         addHistoryToFile(createDoc, assistant_role, responseTempMessage);
 
         serializeJson(formattedDoc, responseMessage);

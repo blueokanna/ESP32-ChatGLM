@@ -1,6 +1,8 @@
 #ifndef SYNC_INVOKE_H
 #define SYNC_INVOKE_H
 
+
+
 void syncMessage(AsyncWebServer &server, String &responseMessage, String &userMessage, bool &checkEmpty) {
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -34,6 +36,7 @@ void syncMessage(AsyncWebServer &server, String &responseMessage, String &userMe
 
 void looping_sync_Setting(HTTPClient &http, DynamicJsonDocument &doc, DynamicJsonDocument &formattedDoc, DynamicJsonDocument &createDoc, String &JsonToken, String &responseMessage, String &userMessage, String &invokeChoice, bool &checkEmpty) {
   const char *sync_web_hook = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
+  String responseTempMessage;
 
   if (invokeChoice == "Sync_invoke") {
     if (checkEmpty) {
@@ -49,7 +52,7 @@ void looping_sync_Setting(HTTPClient &http, DynamicJsonDocument &doc, DynamicJso
 
         //String payloadMessage = "{\"model\":\"" + LLM + "\", \"messages\":[{\"role\":\"system\",\"content\":\"" + String(system_role) + "\"},{\"role\":\"user\",\"content\":\"" + userMessage + "\"}],\"stream\":false}";
 
-        int httpResponseCode = http.POST(messageJSON(userMessage,false));
+        int httpResponseCode = http.POST(messageJSON(userMessage, false));
         responseMessage.clear();
 
         if (httpResponseCode > 0) {
@@ -57,15 +60,9 @@ void looping_sync_Setting(HTTPClient &http, DynamicJsonDocument &doc, DynamicJso
 
           DeserializationError error = deserializeJson(doc, responseAnswer);
           if (!error) {
-            String responseTempMessage = doc["choices"][0]["message"]["content"].as<String>();
+            responseTempMessage = doc["choices"][0]["message"]["content"].as<String>();
 
-            responseTempMessage.replace("\"", "");
-            responseTempMessage.replace("\\n\\n", "\n");
-            responseTempMessage.replace("\\nn", "\n");
-            responseTempMessage.replace("\\n", "\n");
-            responseTempMessage.replace("\\", "");
-            responseTempMessage.replace("\null", "");
-            responseTempMessage.replace("null", "");
+            responseTempMessage = processResponseMessage(responseTempMessage);
 
             JsonArray choicesArray = formattedDoc.createNestedArray("choices");
             JsonObject choice = choicesArray.createNestedObject();
@@ -73,13 +70,15 @@ void looping_sync_Setting(HTTPClient &http, DynamicJsonDocument &doc, DynamicJso
             json_message["role"] = assistant_role;
             json_message["content"] = responseTempMessage;
 
+            //Serial.println(responseTempMessage);
 
-            addHistoryToFile(createDoc, user_role, userMessage);
+            //addHistoryToFile(createDoc, user_role, userMessage);
             addHistoryToFile(createDoc, assistant_role, responseTempMessage);
 
-            serializeJson(formattedDoc, responseMessage);               //Serialisation to get responseMessage
+            serializeJson(formattedDoc, responseMessage);  //Serialisation to get responseMessage
+            formattedDoc.clear();
           }
-          if(FileSizeChecker()){
+          if (FileSizeChecker()) {
             return;
           }
           //Serial.println(responseMessage);  //debug
@@ -88,7 +87,7 @@ void looping_sync_Setting(HTTPClient &http, DynamicJsonDocument &doc, DynamicJso
           retryCount++;
           Serial.print(F("HTTP POST request failed, error: "));
           Serial.println(httpResponseCode);
-          delay(500);           // Retry interval can be adjusted on demand
+          delay(500);  // Retry interval can be adjusted on demand
         }
       }
     }
